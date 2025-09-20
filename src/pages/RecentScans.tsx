@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useState } from "react";
 
-// Mock data for recent scans
+// Mock data for recent scans - Enhanced with better examples
 const mockScans = [
   {
     id: "1",
@@ -16,16 +16,18 @@ const mockScans = [
     status: "verified",
     timestamp: "2 hours ago",
     source: "Reuters Health",
-    thumbnail: "📊"
+    thumbnail: "📊",
+    url: "https://reuters.com/health/coffee-heart-study-2024"
   },
   {
     id: "2", 
-    headline: "Miracle Cure for Cancer Discovered by Local Doctor",
-    snippet: "Dr. Smith claims his revolutionary treatment can cure any cancer...",
+    headline: "Miracle Cure for Cancer Discovered by Local Doctor - They Don't Want You to Know!",
+    snippet: "Dr. Smith claims his revolutionary treatment can cure any cancer in just 3 days...",
     status: "misinformation",
     timestamp: "5 hours ago",
-    source: "Social Media Post",
-    thumbnail: "🔬"
+    source: "Suspicious Health Blog",
+    thumbnail: "🔬",
+    url: "https://fake-health-blog.com/miracle-cure-cancer"
   },
   {
     id: "3",
@@ -34,7 +36,8 @@ const mockScans = [
     status: "inconclusive", 
     timestamp: "1 day ago",
     source: "Unknown Blog",
-    thumbnail: "💰"
+    thumbnail: "💰",
+    url: "https://crypto-rumors-blog.com/government-digital-currency"
   },
   {
     id: "4",
@@ -42,17 +45,19 @@ const mockScans = [
     snippet: "The latest IPCC report indicates global temperatures are rising faster...",
     status: "verified",
     timestamp: "2 days ago",
-    source: "Scientific Journal",
-    thumbnail: "🌡️"
+    source: "NASA Climate Division",
+    thumbnail: "🌡️",
+    url: "https://nasa.gov/climate-change-report-2024"
   },
   {
     id: "5",
-    headline: "Vaccination Rates Drop to Historic Lows Amid Safety Concerns",
-    snippet: "New data shows declining vaccination rates across multiple regions...",
-    status: "inconclusive",
+    headline: "5G Towers Cause COVID-19 Symptoms - Scientists Confirm Link",
+    snippet: "New research allegedly shows connection between 5G radiation and virus symptoms...",
+    status: "misinformation",
     timestamp: "3 days ago", 
-    source: "Health Department",
-    thumbnail: "💉"
+    source: "Conspiracy Theory Site",
+    thumbnail: "📡",
+    url: "https://conspiracy-theories.net/5g-covid-connection"
   }
 ];
 
@@ -100,10 +105,12 @@ const RecentScans = () => {
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-2xl font-bold text-gradient">Clarity AI</h1>
             </Link>
-            <Button size="sm" className="flex items-center space-x-2">
-              <Plus className="h-4 w-4" />
-              <span>New Scan</span>
-            </Button>
+            <Link to="/scan">
+              <Button size="sm" className="flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>New Scan</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -174,9 +181,14 @@ const RecentScans = () => {
           <div className="text-center py-12">
             <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">No scans found</h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-4">
               {searchQuery ? "Try adjusting your search terms" : "Start by scanning some content for misinformation"}
             </p>
+            {!searchQuery && (
+              <Link to="/scan">
+                <Button>Start New Scan</Button>
+              </Link>
+            )}
           </div>
         )}
       </div>

@@ -164,9 +164,14 @@ const SavedItems = () => {
               <p className="text-muted-foreground mb-4">
                 Save interesting scans to review them later
               </p>
-              <Link to="/recent-scans">
-                <Button>Browse Recent Scans</Button>
-              </Link>
+              <div className="flex gap-2 justify-center">
+                <Link to="/scan">
+                  <Button>Start New Scan</Button>
+                </Link>
+                <Link to="/recent-scans">
+                  <Button variant="outline">Browse Recent Scans</Button>
+                </Link>
+              </div>
             </Card>
           )}
         </div>

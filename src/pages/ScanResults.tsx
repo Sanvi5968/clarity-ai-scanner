@@ -2,17 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Share2, CheckCircle, XCircle, HelpCircle, ExternalLink, ArrowLeft, BookOpen, Clock } from "lucide-react";
+import { Shield, Share2, CheckCircle, XCircle, HelpCircle, ExternalLink, ArrowLeft, BookOpen, Clock, Link2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
-// Mock data for scan results
+// Mock data for scan results - Enhanced with URLs and better detection
 const mockScanData = {
   "1": {
     headline: "New Study Shows Coffee Reduces Risk of Heart Disease by 50%",
     status: "verified",
     explanation: "This information matches data from multiple trusted medical sources and peer-reviewed studies.",
     confidence: 92,
+    scannedUrl: "https://reuters.com/health/coffee-heart-study-2024",
     sources: [
       {
         title: "American Heart Association",
@@ -39,34 +40,180 @@ const mockScanData = {
     ]
   },
   "2": {
-    headline: "Miracle Cure for Cancer Discovered by Local Doctor", 
+    headline: "Miracle Cure for Cancer Discovered by Local Doctor - They Don't Want You to Know!", 
     status: "misinformation",
-    explanation: "This claim lacks scientific evidence and contradicts established medical research. No single 'miracle cure' for all cancers exists.",
-    confidence: 94,
+    explanation: "This content promotes dangerous misinformation by claiming a single doctor has discovered a cure for all cancers. Such claims lack scientific evidence and can delay proper medical treatment.",
+    confidence: 96,
+    scannedUrl: "https://fake-health-blog.com/miracle-cure-cancer",
     sources: [
       {
         title: "National Cancer Institute",
-        snippet: "No single treatment can cure all types of cancer. Beware of miracle cure claims...",
+        snippet: "No single treatment can cure all types of cancer. Be wary of miracle cure claims that lack peer review...",
         url: "https://cancer.gov/treatment-facts",
         credibility: "Very High"
       },
       {
         title: "American Cancer Society",
-        snippet: "Unproven cancer treatments can be dangerous and delay effective care...",
+        snippet: "Unproven cancer treatments can be dangerous and delay effective, evidence-based care...",
         url: "https://cancer.org/unproven-treatments", 
         credibility: "Very High"
+      },
+      {
+        title: "Medical Misinformation Database",
+        snippet: "This type of 'miracle cure' claim is a common pattern in health misinformation...",
+        url: "https://healthfacts.org/miracle-claims",
+        credibility: "High"
       }
     ],
     relatedScans: [
       { title: "Cancer immunotherapy breakthroughs", status: "verified" },
       { title: "Alternative cancer treatment claims", status: "misinformation" }
     ]
+  },
+  "3": {
+    headline: "Government Plans to Implement Digital Currency Next Month",
+    status: "inconclusive",
+    explanation: "This claim lacks official confirmation from government sources. While digital currency discussions are ongoing, no concrete timeline has been officially announced.",
+    confidence: 45,
+    scannedUrl: "https://crypto-rumors-blog.com/government-digital-currency",
+    sources: [
+      {
+        title: "Federal Reserve Communications",
+        snippet: "The Fed continues to research digital currencies but has not announced implementation dates...",
+        url: "https://federalreserve.gov/cbdc-research",
+        credibility: "Very High"
+      }
+    ],
+    relatedScans: [
+      { title: "Digital currency pilot programs", status: "verified" },
+      { title: "Cryptocurrency regulation updates", status: "verified" }
+    ]
+  },
+  "4": {
+    headline: "Climate Change Report Shows Accelerating Temperature Rise",
+    status: "verified", 
+    explanation: "This information aligns with the latest scientific consensus and data from multiple climate research institutions.",
+    confidence: 91,
+    scannedUrl: "https://nasa.gov/climate-change-report-2024",
+    sources: [
+      {
+        title: "NASA Goddard Institute",
+        snippet: "Latest climate data confirms accelerating global temperature trends...",
+        url: "https://nasa.gov/giss/temperature-data",
+        credibility: "Very High"
+      },
+      {
+        title: "IPCC Climate Report 2024",
+        snippet: "Comprehensive analysis shows continued warming trends exceeding previous projections...",
+        url: "https://ipcc.ch/report-2024",
+        credibility: "Very High"
+      }
+    ],
+    relatedScans: [
+      { title: "Arctic ice melting acceleration", status: "verified" },
+      { title: "Climate change adaptation strategies", status: "verified" }
+    ]
+  },
+  "5": {
+    headline: "5G Towers Cause COVID-19 Symptoms - Scientists Confirm Link",
+    status: "misinformation",
+    explanation: "This is a dangerous conspiracy theory that has been thoroughly debunked by health authorities worldwide. There is no scientific evidence linking 5G technology to COVID-19.",
+    confidence: 98,
+    scannedUrl: "https://conspiracy-theories.net/5g-covid-connection",
+    sources: [
+      {
+        title: "World Health Organization",
+        snippet: "WHO confirms no link between 5G networks and COVID-19. Viruses cannot spread through radio waves...",
+        url: "https://who.int/5g-covid-facts",
+        credibility: "Very High"
+      },
+      {
+        title: "Federal Communications Commission",
+        snippet: "FCC confirms 5G technology poses no health risks when deployed within safety guidelines...",
+        url: "https://fcc.gov/5g-safety",
+        credibility: "Very High"
+      },
+      {
+        title: "Scientific Consensus Database",
+        snippet: "Multiple peer-reviewed studies find no causal relationship between 5G and health issues...",
+        url: "https://scienceconsensus.org/5g-studies",
+        credibility: "High"
+      }
+    ],
+    relatedScans: [
+      { title: "5G health studies review", status: "verified" },
+      { title: "COVID-19 transmission mechanisms", status: "verified" }
+    ]
   }
+};
+
+// Function to generate mock scan results for new scans
+const generateMockScanResult = (content: string, type: 'url' | 'text') => {
+  // Analyze content to determine if it's likely misinformation
+  const lowerContent = content.toLowerCase();
+  
+  // Keywords that suggest misinformation
+  const misinfoKeywords = ['miracle cure', 'doctors hate', 'secret', 'conspiracy', 'big pharma', 'government coverup', 'they don\'t want you to know'];
+  const dangerousKeywords = ['vaccine dangerous', 'covid hoax', 'flat earth', '5g causes', 'chemtrails'];
+  
+  // Keywords that suggest verified information
+  const verifiedKeywords = ['study shows', 'research indicates', 'according to scientists', 'peer reviewed', 'clinical trial'];
+  const trustedDomains = ['reuters.com', 'bbc.com', 'cnn.com', 'nasa.gov', 'who.int', 'cdc.gov', 'harvard.edu'];
+  
+  let status = 'inconclusive';
+  let confidence = 65;
+  let explanation = 'This information requires further verification. We could not find sufficient evidence from trusted sources.';
+  
+  // Check for misinformation indicators
+  if (misinfoKeywords.some(keyword => lowerContent.includes(keyword))) {
+    status = 'misinformation';
+    confidence = Math.floor(Math.random() * 15) + 85; // 85-99%
+    explanation = 'This content contains claims that lack scientific evidence and contradict established facts from trusted sources.';
+  } else if (dangerousKeywords.some(keyword => lowerContent.includes(keyword))) {
+    status = 'misinformation';
+    confidence = Math.floor(Math.random() * 10) + 90; // 90-99%
+    explanation = 'This content promotes potentially dangerous misinformation that contradicts scientific consensus and public health guidance.';
+  } else if (verifiedKeywords.some(keyword => lowerContent.includes(keyword)) || 
+             (type === 'url' && trustedDomains.some(domain => content.includes(domain)))) {
+    status = 'verified';
+    confidence = Math.floor(Math.random() * 15) + 80; // 80-94%
+    explanation = 'This information aligns with data from multiple trusted sources and appears to be factually accurate.';
+  }
+  
+  return {
+    headline: type === 'url' ? `Content from: ${content}` : content.substring(0, 100) + '...',
+    status,
+    explanation,
+    confidence,
+    scannedUrl: type === 'url' ? content : null,
+    sources: [
+      {
+        title: "Fact-Check Database",
+        snippet: "Cross-referenced with our comprehensive fact-checking database...",
+        url: "https://factcheck-db.com",
+        credibility: "High"
+      }
+    ],
+    relatedScans: []
+  };
 };
 
 const ScanResults = () => {
   const { id } = useParams();
-  const scanData = mockScanData[id as keyof typeof mockScanData];
+  let scanData = mockScanData[id as keyof typeof mockScanData];
+
+  // If not found in mock data, try to get from localStorage (for new scans)
+  if (!scanData) {
+    const storedScan = localStorage.getItem(`scan_${id}`);
+    if (storedScan) {
+      const parsedScan = JSON.parse(storedScan);
+      scanData = generateMockScanResult(parsedScan.content, parsedScan.type);
+      // Add the scanned URL if it exists
+      if (parsedScan.scannedUrl) {
+        scanData.scannedUrl = parsedScan.scannedUrl;
+      }
+    }
+  }
 
   if (!scanData) {
     return (
@@ -137,11 +284,30 @@ const ScanResults = () => {
       </header>
 
       <div className="container mx-auto px-4 py-6">
-        {/* Headline */}
+        {/* Headline and URL */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground mb-4 leading-tight">
             {scanData.headline}
           </h1>
+          {scanData.scannedUrl && (
+            <Card className="p-4 bg-muted/30">
+              <div className="flex items-center space-x-2">
+                <Link2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-muted-foreground">Scanned URL:</p>
+                  <a 
+                    href={scanData.scannedUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline break-all"
+                  >
+                    {scanData.scannedUrl}
+                  </a>
+                </div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Summary Section */}

@@ -13,15 +13,15 @@ export const BottomNavigation = () => {
       isActive: location.pathname === "/recent-scans"
     },
     {
+      icon: Settings, // Using Settings icon for Scan
+      label: "Scan",
+      path: "/scan",
+      isActive: location.pathname === "/scan"
+    },
+    {
       icon: Bookmark,
       label: "Saved",
       path: "/saved-items",
-      isActive: location.pathname === "/saved-items"
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      path: "/saved-items", // Settings is part of the saved items page
       isActive: location.pathname === "/saved-items"
     }
   ];
