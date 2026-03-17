@@ -310,14 +310,12 @@ const ScanResults = () => {
                 <Link2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-muted-foreground">Scanned URL:</p>
-                  <a 
-                    href={scanData.scannedUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline break-all"
+                  <button 
+                    onClick={() => window.open(scanData.scannedUrl!, '_blank', 'noopener,noreferrer')}
+                    className="text-sm text-primary hover:underline break-all text-left"
                   >
                     {scanData.scannedUrl}
-                  </a>
+                  </button>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               </div>
