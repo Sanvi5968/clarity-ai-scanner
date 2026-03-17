@@ -310,14 +310,12 @@ const ScanResults = () => {
                 <Link2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-muted-foreground">Scanned URL:</p>
-                  <a 
-                    href={scanData.scannedUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline break-all"
+                  <button 
+                    onClick={() => window.open(scanData.scannedUrl!, '_blank', 'noopener,noreferrer')}
+                    className="text-sm text-primary hover:underline break-all text-left"
                   >
                     {scanData.scannedUrl}
-                  </a>
+                  </button>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               </div>
@@ -373,12 +371,18 @@ const ScanResults = () => {
                     <p className="text-muted-foreground mb-4 leading-relaxed">
                       {source.snippet}
                     </p>
-                    <a href={source.url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                        <ExternalLink className="h-3 w-3" />
-                        <span>View Full Source</span>
-                      </Button>
-                    </a>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center space-x-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(source.url, '_blank', 'noopener,noreferrer');
+                      }}
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      <span>View Full Source</span>
+                    </Button>
                   </AccordionContent>
                 </Card>
               </AccordionItem>
