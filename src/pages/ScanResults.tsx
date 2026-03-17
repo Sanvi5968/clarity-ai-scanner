@@ -373,10 +373,12 @@ const ScanResults = () => {
                     <p className="text-muted-foreground mb-4 leading-relaxed">
                       {source.snippet}
                     </p>
-                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                      <ExternalLink className="h-3 w-3" />
-                      <span>View Full Source</span>
-                    </Button>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                        <ExternalLink className="h-3 w-3" />
+                        <span>View Full Source</span>
+                      </Button>
+                    </a>
                   </AccordionContent>
                 </Card>
               </AccordionItem>
