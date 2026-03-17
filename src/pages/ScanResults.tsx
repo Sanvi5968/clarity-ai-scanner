@@ -306,21 +306,21 @@ const ScanResults = () => {
           </h1>
           {scanData.scannedUrl && (
             <Card className="p-4 bg-muted/30">
-              <div className="flex items-center space-x-2">
+              <a
+                href={scanData.scannedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2"
+              >
                 <Link2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-muted-foreground">Scanned URL:</p>
-                  <a
-                    href={scanData.scannedUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline break-all text-left"
-                  >
+                  <span className="text-sm text-primary hover:underline break-all text-left block">
                     {scanData.scannedUrl}
-                  </a>
+                  </span>
                 </div>
                 <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              </div>
+              </a>
             </Card>
           )}
         </div>
