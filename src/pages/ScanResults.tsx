@@ -373,12 +373,18 @@ const ScanResults = () => {
                     <p className="text-muted-foreground mb-4 leading-relaxed">
                       {source.snippet}
                     </p>
-                    <a href={source.url} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                        <ExternalLink className="h-3 w-3" />
-                        <span>View Full Source</span>
-                      </Button>
-                    </a>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex items-center space-x-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(source.url, '_blank', 'noopener,noreferrer');
+                      }}
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      <span>View Full Source</span>
+                    </Button>
                   </AccordionContent>
                 </Card>
               </AccordionItem>
