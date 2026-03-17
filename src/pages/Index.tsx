@@ -69,7 +69,14 @@ const Index = () => {
                   Start Detecting Misinformation
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="px-8 py-6 text-lg">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="px-8 py-6 text-lg"
+                onClick={() => {
+                  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 Learn How It Works
               </Button>
             </div>
