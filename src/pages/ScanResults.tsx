@@ -384,7 +384,6 @@ const ScanResults = () => {
                         <span>View Full Source</span>
                       </a>
                     </Button>
-                    </Button>
                   </AccordionContent>
                 </Card>
               </AccordionItem>
