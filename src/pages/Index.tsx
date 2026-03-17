@@ -69,7 +69,14 @@ const Index = () => {
                   Start Detecting Misinformation
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="px-8 py-6 text-lg">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="px-8 py-6 text-lg"
+                onClick={() => {
+                  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 Learn How It Works
               </Button>
             </div>
@@ -78,7 +85,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-muted/30">
+      <section id="how-it-works" className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold mb-4">Why Choose Clarity AI?</h3>

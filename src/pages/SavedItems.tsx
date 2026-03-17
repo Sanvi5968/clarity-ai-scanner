@@ -3,10 +3,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Shield, Settings, Bell, HelpCircle, Lock, User, Bookmark, CheckCircle, XCircle, Calendar, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Shield, Settings, Bell, HelpCircle, Lock, User, Bookmark, CheckCircle, XCircle, Calendar, Trash2, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 // Mock saved scans data
 const mockSavedScans = [
@@ -35,6 +39,10 @@ const mockSavedScans = [
 
 const SavedItems = () => {
   const [savedScans, setSavedScans] = useState(mockSavedScans);
+  const [username, setUsername] = useState("John Doe");
+  const [email, setEmail] = useState("john.doe@example.com");
+  const [notifications, setNotifications] = useState({ trending: true, saved: false, weekly: true });
+  const { toast } = useToast();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -49,21 +57,9 @@ const SavedItems = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "verified":
-        return <CheckCircle className="h-4 w-4 text-success" />;
-      case "misinformation":
-        return <XCircle className="h-4 w-4 text-destructive" />;
-      case "inconclusive":
-        return <HelpCircle className="h-4 w-4 text-warning" />;
-      default:
-        return <HelpCircle className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
-
   const removeSavedScan = (id: string) => {
     setSavedScans(savedScans.filter(scan => scan.id !== id));
+    toast({ title: "Removed", description: "Scan removed from saved items." });
   };
 
   return (
@@ -72,10 +68,10 @@ const SavedItems = () => {
       <header className="bg-white/80 backdrop-blur-sm border-b border-border sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-2xl font-bold text-gradient">Clarity AI</h1>
-            </div>
+            </Link>
           </div>
         </div>
       </header>
@@ -91,7 +87,7 @@ const SavedItems = () => {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-xl font-bold">John Doe</h2>
+              <h2 className="text-xl font-bold">{username}</h2>
               <p className="text-muted-foreground">Fact-checking since January 2024</p>
               <div className="flex items-center space-x-4 mt-2">
                 <div className="text-sm">
@@ -186,63 +182,159 @@ const SavedItems = () => {
           <Card className="card-gradient">
             <div className="p-4">
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center space-x-3">
-                    <User className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <h4 className="font-medium">Account Settings</h4>
-                      <p className="text-sm text-muted-foreground">Manage your profile and account</p>
+                {/* Account Settings */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center justify-between py-3 w-full text-left hover:bg-muted/50 rounded-lg px-2 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <User className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <h4 className="font-medium">Account Settings</h4>
+                          <p className="text-sm text-muted-foreground">Manage your profile and account</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Account Settings</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1 block">Username</label>
+                        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1 block">Email</label>
+                        <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+                      </div>
+                      <Button className="w-full" onClick={() => toast({ title: "Saved", description: "Account settings updated." })}>
+                        Save Changes
+                      </Button>
                     </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
+                  </DialogContent>
+                </Dialog>
 
                 <Separator />
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center space-x-3">
-                    <Bell className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <h4 className="font-medium">Notification Preferences</h4>
-                      <p className="text-sm text-muted-foreground">Get alerts on topics of interest</p>
+                {/* Notification Preferences */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center justify-between py-3 w-full text-left hover:bg-muted/50 rounded-lg px-2 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <Bell className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <h4 className="font-medium">Notification Preferences</h4>
+                          <p className="text-sm text-muted-foreground">Get alerts on topics of interest</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Notification Preferences</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Trending misinformation alerts</p>
+                          <p className="text-sm text-muted-foreground">Get notified about viral false claims</p>
+                        </div>
+                        <Switch checked={notifications.trending} onCheckedChange={(v) => setNotifications(p => ({...p, trending: v}))} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Saved scan updates</p>
+                          <p className="text-sm text-muted-foreground">Updates on your saved scans</p>
+                        </div>
+                        <Switch checked={notifications.saved} onCheckedChange={(v) => setNotifications(p => ({...p, saved: v}))} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Weekly digest</p>
+                          <p className="text-sm text-muted-foreground">Weekly summary of fact-checks</p>
+                        </div>
+                        <Switch checked={notifications.weekly} onCheckedChange={(v) => setNotifications(p => ({...p, weekly: v}))} />
+                      </div>
+                      <Button className="w-full" onClick={() => toast({ title: "Saved", description: "Notification preferences updated." })}>
+                        Save Preferences
+                      </Button>
                     </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
+                  </DialogContent>
+                </Dialog>
 
                 <Separator />
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center space-x-3">
-                    <Lock className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <h4 className="font-medium">Privacy Policy</h4>
-                      <p className="text-sm text-muted-foreground">Learn how we protect your data</p>
+                {/* Privacy Policy */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center justify-between py-3 w-full text-left hover:bg-muted/50 rounded-lg px-2 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <Lock className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <h4 className="font-medium">Privacy Policy</h4>
+                          <p className="text-sm text-muted-foreground">Learn how we protect your data</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Privacy Policy</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4 text-sm text-muted-foreground leading-relaxed">
+                      <p><strong className="text-foreground">Data Collection:</strong> Clarity AI collects only the URLs and text you submit for scanning. We do not track your browsing activity outside the app.</p>
+                      <p><strong className="text-foreground">Data Usage:</strong> Submitted content is analyzed by our AI engine and cross-referenced with trusted databases. Scan data is stored locally on your device.</p>
+                      <p><strong className="text-foreground">Data Sharing:</strong> We do not sell or share your personal data with third parties. Aggregated, anonymized usage statistics may be used to improve our service.</p>
+                      <p><strong className="text-foreground">Data Retention:</strong> You can delete your scan history at any time. We retain anonymized data for up to 12 months for service improvement.</p>
+                      <p><strong className="text-foreground">Your Rights:</strong> You have the right to access, modify, or delete your data at any time through the Account Settings.</p>
                     </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
+                  </DialogContent>
+                </Dialog>
 
                 <Separator />
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center space-x-3">
-                    <HelpCircle className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <h4 className="font-medium">Help & Support</h4>
-                      <p className="text-sm text-muted-foreground">Get help using Clarity AI</p>
+                {/* Help & Support */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center justify-between py-3 w-full text-left hover:bg-muted/50 rounded-lg px-2 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <HelpCircle className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <h4 className="font-medium">Help & Support</h4>
+                          <p className="text-sm text-muted-foreground">Get help using Clarity AI</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Help & Support</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <Card className="p-4">
+                        <h4 className="font-medium mb-1">How do I scan a URL?</h4>
+                        <p className="text-sm text-muted-foreground">Go to the Scan page, paste a URL in the input field, and click "Scan URL for Misinformation".</p>
+                      </Card>
+                      <Card className="p-4">
+                        <h4 className="font-medium mb-1">How accurate are the results?</h4>
+                        <p className="text-sm text-muted-foreground">Our AI cross-references multiple trusted sources. The confidence percentage indicates how certain the analysis is.</p>
+                      </Card>
+                      <Card className="p-4">
+                        <h4 className="font-medium mb-1">Can I scan text directly?</h4>
+                        <p className="text-sm text-muted-foreground">Yes! Use the "Scan Text" tab on the Scan page to paste and analyze any text content.</p>
+                      </Card>
+                      <Card className="p-4">
+                        <h4 className="font-medium mb-1">Contact Us</h4>
+                        <p className="text-sm text-muted-foreground">Email: support@clarityai.com</p>
+                      </Card>
                     </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </Card>

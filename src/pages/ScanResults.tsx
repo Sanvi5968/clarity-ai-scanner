@@ -275,7 +275,22 @@ const ScanResults = () => {
               <Shield className="h-6 w-6 text-primary" />
               <span className="text-lg font-bold text-gradient">Clarity AI</span>
             </div>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: scanData.headline,
+                    text: scanData.explanation,
+                    url: window.location.href,
+                  }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+            >
               <Share2 className="h-4 w-4 mr-2" />
               Share
             </Button>
@@ -358,10 +373,12 @@ const ScanResults = () => {
                     <p className="text-muted-foreground mb-4 leading-relaxed">
                       {source.snippet}
                     </p>
-                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
-                      <ExternalLink className="h-3 w-3" />
-                      <span>View Full Source</span>
-                    </Button>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                        <ExternalLink className="h-3 w-3" />
+                        <span>View Full Source</span>
+                      </Button>
+                    </a>
                   </AccordionContent>
                 </Card>
               </AccordionItem>
